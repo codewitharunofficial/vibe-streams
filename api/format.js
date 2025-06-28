@@ -1,7 +1,7 @@
 // api/formats.js
 import ytdl from '@distube/ytdl-core';
 
-export default async function handler(req, res) {
+export default async function formats(req, res) {
     const { videoId } = req.query;
 
     if (!videoId) {
@@ -15,7 +15,9 @@ export default async function handler(req, res) {
     }
 
     try {
-        const info = await ytdl.getInfo(url);
+        const info = await ytdl.getInfo(url, {
+            
+        });
 
         const formats = info.formats.map((format) => ({
             itag: format.itag,
@@ -28,14 +30,16 @@ export default async function handler(req, res) {
             url: format.url,
         })).filter((item) => item.hasAudio === true);
 
-        // const formatsWithAudio = formats.filter((item) => item.hasAudio === true);
+        // res.status(200).json({
+        //     title: info.videoDetails.title,
+        //     videoId: info.videoDetails.videoId,
+        //     lengthSeconds: info.videoDetails.lengthSeconds,
+        //     formats,
+        // });
 
-        res.status(200).json({
-            title: info.videoDetails.title,
-            videoId: info.videoDetails.videoId,
-            lengthSeconds: info.videoDetails.lengthSeconds,
-            formats,
-        });
+        console.log("Trying To Play: ", formats.find((item) => item.itag === 251).url);
+
+        res.redirect(formats.find((item) => item.itag === 251).url);
     } catch (err) {
         console.error(err);
         res.status(500).json({ error: 'Failed to retrieve video formats' });
