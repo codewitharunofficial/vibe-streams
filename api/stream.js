@@ -24,14 +24,14 @@ export default async function stream(req, res) {
                 'Accept-Language: en-US,en;q=0.9',
                 'Referer: https://www.youtube.com/',
                 'Origin: https://www.youtube.com'
-            ]
+            ],
         };
 
-        if (proxyUrl) {
-            options.proxy = proxyUrl;
-        }
+        // if (proxyUrl) {
+        //     options.proxy = proxyUrl;
+        // }
 
-        const streamUrl = await youtubedl(url, options);
+        const streamUrl = await youtubedl(url, {...options, proxy: proxyUrl});
         return res.redirect(streamUrl);
     } catch (err) {
         console.error('Error:', err);
